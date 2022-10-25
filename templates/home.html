@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .mainBox {
+        width: 600px;
+        height: 300px;
+        margin: 40px auto;
+        border: 1px solid #ccc;
+        border-radius: 120px;
+        overflow: hidden;
+      }
+      .main1 {
+        height: 360px;
+        margin: 0 auto;
+        margin-top: 68px;
+      }
+      .boxTop {
+        height: 100px;
+        background-color: rgb(158, 186, 105);
+        text-align: center;
+        color: #3c4303;
+      }
+      .boxTop h1 {
+        padding-top: 20px;
+      }
+      .boxTop .h_Two {
+        padding-top: 50px;
+      }
+      .boxDown {
+        text-align: center;
+        height: 200px;
+        margin: 30px auto;
+        color: #434141;
+      }
+      .boxDown input {
+        outline: none;
+        margin-top: 20px;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        padding: 3px 10px;
+        box-sizing: border-box;
+      }
+      .boxDown button,
+      .num_submit {
+        background-color: white;
+        color: #434141;
+        border: 1px solid #ccc;
+        padding: 6px 22px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 20px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        border-radius: 24px;
+      }
+      .boxDown button:hover,
+      .num_submit:hover {
+        background-color: rgb(158, 186, 105);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mainBox main1">
+      <form action="/register" method="POST">
+        <div class="boxTop">
+          <h1>Welcome</h1>
+          <h3>Please Register your account :</h3>
+        </div>
+        <div class="boxDown">
+          <h3>Register system</h3>
+          Name:<input type="text" name="name" /><br />
+          Asscount : <input type="text" name="username" /><br />
+          Password : <input type="password" name="password" />
+          <br />
+          <button type="submit">Register</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mainBox">
+      <form action="/signin" method="POST">
+        <div class="boxTop">
+          <h1>Hello!</h1>
+          <h3>Please Entry your Account & Password</h3>
+        </div>
+        <div class="boxDown">
+          <h3>Login system</h3>
+          Asscount : <input type="text" name="username" /><br />
+          Password : <input type="password" name="password" />
+          <br />
+          <button type="submit">Login</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

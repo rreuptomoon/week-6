@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>error</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .mainBox {
+        width: 600px;
+        height: 300px;
+        margin: 120px auto;
+        border: 1px solid #ccc;
+        border-radius: 120px;
+        overflow: hidden;
+      }
+      .boxTop {
+        height: 100px;
+        background-color: rgb(158, 186, 105);
+        text-align: center;
+        color: #3c4303;
+      }
+      .boxTop h1 {
+        padding-top: 30px;
+      }
+      .boxDown {
+        text-align: center;
+        height: 200px;
+        margin: 54px auto;
+        color: #434141;
+      }
+      .boxDown input {
+        outline: none;
+        margin-top: 20px;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        padding: 3px 10px;
+        box-sizing: border-box;
+      }
+
+      .boxDown a {
+        background-color: white;
+        color: #434141;
+        border: 1px solid #ccc;
+        padding: 6px 22px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 20px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        border-radius: 24px;
+      }
+      .boxDown a:hover {
+        background-color: rgb(158, 186, 105);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mainBox">
+      <div class="boxTop">
+        <h1>Welcome join Us!</h1>
+      </div>
+      <div class="boxDown">
+        <h3>{{name}} Congratulation, you can login now！</h3>
+        <a href="/">Back</a>
+      </div>
+    </div>
+  </body>
+</html>
