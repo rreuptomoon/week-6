@@ -1,3 +1,5 @@
+from socket import MsgFlag
+from unittest import result
 from flask import Flask, render_template, request, redirect, url_for, session
 from numpy import record
 from flask_mysqldb import MySQL
@@ -16,7 +18,7 @@ app.secret_key="test your page!"
 # Enter database connection details 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'rita541982'
 app.config['MYSQL_DB'] = 'website' # use the database
 
 #  let = mysql , Intial MySQL (class)
@@ -39,7 +41,7 @@ def register():
     member=cursor.fetchone() # fetchone = get member table
     if member: #if the member username exists 
         exists="Account already exists!"
-        return redirect(url_for("error",exists=exists))
+        return redirect(url_for("error",msg=exists))
     else:                                               # the value column must same with database  
         cursor.execute('INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)', (name,username, password,0,timestamp))
         mysql.connection.commit()  # push to database 
@@ -64,10 +66,10 @@ def signin():
     elif username== "" or password == "":          
         #name or password empty
         empty="Please Entry Your Name & Password!!"
-        return redirect(url_for("error",empty=empty))
+        return redirect(url_for("error",msg=empty))
     else:
         wrong_entry="You Got Wrong Entry,Please Try Again!"
-        return redirect(url_for("error",wrong_entry=wrong_entry))
+        return redirect(url_for("error",msg=wrong_entry))
         #pass the name=name,password=password to error page
 
 @app.route("/member")
@@ -88,16 +90,9 @@ def logout():
 
 @app.route("/error") # receive the name &password and show the query string
 def error():
-    empty=request.args.get("empty")
-    wrong_entry=request.args.get("wrong_entry")
-    exists=request.args.get("exists")
-    if empty:          
-        #name or password empty
-        return render_template("error.html",empty=empty)
-    elif wrong_entry:
-        return render_template("error.html",wrong_entry=wrong_entry)
-    else:
-        return render_template("error.html",exists=exists)
+    msgs=request.args.get("msg")
+    return render_template("error.html",msgs=msgs)
+
    
 
 
