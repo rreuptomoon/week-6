@@ -18,7 +18,7 @@ app.secret_key="test your page!"
 # Enter database connection details 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'rita541982'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'website' # use the database
 
 #  let = mysql , Intial MySQL (class)
