@@ -1,9 +1,7 @@
 from socket import MsgFlag
-from unittest import result
 from flask import Flask, render_template, request, redirect, url_for, session
-from numpy import record
-from flask_mysqldb import MySQL
-import MySQLdb.cursors          # import the db and use methods
+from numpy import empty, record
+import mysql.connector      # import the db and use methods
 import time                     # for the timestamp to database
 import datetime
 
@@ -15,14 +13,16 @@ app=Flask(__name__ )
 app.secret_key="test your page!"
 
 
-# Enter database connection details 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'website' # use the database
+# database connection details 
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="rita541982",
+  database="website"   # use which database:
+)
 
-#  let = mysql , Intial MySQL (class)
-mysql = MySQL(app)
+
+mycursor = mydb.cursor()
 
 
 @app.route("/")
@@ -34,30 +34,32 @@ def home():
 def register():
     name=request.form["name"] 
     username=request.form["username"]   # get the form name & password
-    password=request.form["password"] 
-
-    cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor) # use the method     
-    cursor.execute('SELECT * FROM `member` WHERE `username` = %s ',(username,)) #execute the select 
-    member=cursor.fetchone() # fetchone = get member table
+    password=request.form["password"]
+    
+    mycursor = mydb.cursor() # use the method     
+    mycursor.execute('SELECT * FROM `member` WHERE `username` = %s ',(username,)) #execute the select 
+    member=mycursor.fetchone() # fetchone = get member table
     if member: #if the member username exists 
-        exists="Account already exists!"
-        return redirect(url_for("error",msg=exists))
+                exists="Account already exists!"
+                return redirect(url_for("error",msg=exists))
+    elif not username or not name or not password:  #if the form empty 
+            fill_in="Please fill in the form"
+            return redirect(url_for("error",msg=fill_in))
     else:                                               # the value column must same with database  
-        cursor.execute('INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)', (name,username, password,0,timestamp))
-        mysql.connection.commit()  # push to database 
-        return render_template("succeed.html",name=name) # send to succeed page
+         mycursor.execute('INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)', (name,username, password,0,timestamp))
+         mydb.commit()  # push to database 
+         return render_template("succeed.html",name=name) # send to succeed page
 
 
 @app.route("/signin", methods=["POST"])
 def signin():
-     
     username=request.form["username"]   # get the form username & password
     password=request.form["password"] 
 
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM `member` WHERE `username` = %s AND `password` = %s', (username, password,)) 
+    mycursor = mydb.cursor() 
+    mycursor.execute('SELECT * FROM `member` WHERE `username` = %s AND `password` = %s', (username, password,)) 
 # Fetch one record and return result
-    member = cursor.fetchone()
+    member = mycursor.fetchone()
     
     if member:  # if  filter the username & password  
         session['username'] = member['username'] # Create session data,can access this data in other routes
@@ -79,7 +81,12 @@ def member():
     if not sId:
             return redirect(url_for("home"))
     else:
-        return render_template("member.html",sId=sId)
+        mycursor = mydb.cursor()
+        query="SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`"
+        mycursor.execute(query)
+        dates=mycursor.fetchall()
+        for data in dates:
+            return render_template("member.html",sId=sId,dates=dates)
 
 
 @app.route("/logout")    # set the logout to home.page
@@ -88,12 +95,15 @@ def logout():
         return redirect(url_for("home"))
 
 
-@app.route("/error") # receive the name &password and show the query string
+@app.route("/error") # receive msg show the query string
 def error():
     msgs=request.args.get("msg")
     return render_template("error.html",msgs=msgs)
 
-   
+# @app.route("/message",methods=["POST"])
+# def message():
+
+
 
 
 app.run(port=3000)
