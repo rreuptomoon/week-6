@@ -1,15 +1,11 @@
-from socket import MsgFlag
-from flask import Flask, render_template, request, redirect, url_for, session
-from numpy import empty, record
-import mysql.connector      # import the db and use methods
-import time                     # for the timestamp to database
-import datetime
+from flask import Flask, render_template, request, redirect, url_for,session
+import mysql.connector      # import the db and use connector                   
+from datetime import datetime
 
-ts = time.time() # def time :
-timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
+now = datetime.now() # for insert the datetime
 
 app=Flask(__name__ )
-# Change this to your secret key (can be anything, it's for extra protection)
+# Change this to your secret key 
 app.secret_key="test your page!"
 
 
@@ -36,7 +32,7 @@ def register():
     username=request.form["username"]   # get the form name & password
     password=request.form["password"]
     
-    mycursor = mydb.cursor() # use the method     
+    mycursor = mydb.cursor(dictionary=True) # use the method  - result  dictionary=True
     mycursor.execute('SELECT * FROM `member` WHERE `username` = %s ',(username,)) #execute the select 
     member=mycursor.fetchone() # fetchone = get member table
     if member: #if the member username exists 
@@ -46,7 +42,7 @@ def register():
             fill_in="Please fill in the form"
             return redirect(url_for("error",msg=fill_in))
     else:                                               # the value column must same with database  
-         mycursor.execute('INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)', (name,username, password,0,timestamp))
+         mycursor.execute('INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)', (name,username, password,0,now))
          mydb.commit()  # push to database 
          return render_template("succeed.html",name=name) # send to succeed page
 
@@ -56,14 +52,13 @@ def signin():
     username=request.form["username"]   # get the form username & password
     password=request.form["password"] 
 
-    mycursor = mydb.cursor() 
+    mycursor = mydb.cursor(dictionary=True) 
     mycursor.execute('SELECT * FROM `member` WHERE `username` = %s AND `password` = %s', (username, password,)) 
 # Fetch one record and return result
     member = mycursor.fetchone()
-    
     if member:  # if  filter the username & password  
-        session['username'] = member['username'] # Create session data,can access this data in other routes
-        session['password'] = member['password']
+        session["username"] = member["username"]
+        session["password"] = member["password"]
         return redirect(url_for("member"))
     elif username== "" or password == "":          
         #name or password empty
@@ -82,10 +77,10 @@ def member():
             return redirect(url_for("home"))
     else:
         mycursor = mydb.cursor()
-        query="SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`"
-        mycursor.execute(query)
+        mycursor.execute("SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`")
         dates=mycursor.fetchall()
         for data in dates:
+            print(data)
             return render_template("member.html",sId=sId,dates=dates)
 
 
@@ -102,8 +97,6 @@ def error():
 
 # @app.route("/message",methods=["POST"])
 # def message():
-
-
 
 
 app.run(port=3000)
