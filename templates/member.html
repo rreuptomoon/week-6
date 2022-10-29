@@ -19,7 +19,7 @@
         overflow: hidden;
       }
       .box1 {
-        margin-top: 80px;
+        margin-top: 40px;
       }
       .box2 {
         height: 600px;
@@ -72,6 +72,14 @@
         background-color: rgb(158, 186, 105);
         color: white;
       }
+      .msgbox ul {
+        list-style: none;
+      }
+      .msgbox li {
+        text-align: start;
+        margin-left: 155px;
+        padding: 8px;
+      }
     </style>
   </head>
   <body>
@@ -102,7 +110,7 @@
         <div class="msgbox">
           <ul>
             {%for data in dates %}
-            <li>{{data}}</li>
+            <li>{{data[0]}} : {{data[1]}}</li>
             {% endfor %}
           </ul>
         </div>

@@ -1,8 +1,12 @@
+
 from flask import Flask, render_template, request, redirect, url_for,session
 import mysql.connector      # import the db and use connector                   
-from datetime import datetime
+import datetime
 
-now = datetime.now() # for insert the datetime
+
+
+# for insert the datetime
+# now=datetime.datetime.now()
 
 app=Flask(__name__ )
 # Change this to your secret key 
@@ -13,12 +17,18 @@ app.secret_key="test your page!"
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="",
+  password="rita541982",
   database="website"   # use which database:
 )
 
 
+
 mycursor = mydb.cursor()
+# mycursor.execute("SELECT CURRENT_TIMESTAMP")
+# current_date = mycursor.fetchone()
+# print(current_date[0])
+
+
 
 
 @app.route("/")
@@ -32,7 +42,7 @@ def register():
     username=request.form["username"]   # get the form name & password
     password=request.form["password"]
     
-    mycursor = mydb.cursor(dictionary=True) # use the method  - result  dictionary=True
+    mycursor = mydb.cursor(dictionary=True,buffered=True) # use the method  - result  dictionary=True
     mycursor.execute('SELECT * FROM `member` WHERE `username` = %s ',(username,)) #execute the select 
     member=mycursor.fetchone() # fetchone = get member table
     if member: #if the member username exists 
@@ -41,8 +51,11 @@ def register():
     elif not username or not name or not password:  #if the form empty 
             fill_in="Please fill in the form"
             return redirect(url_for("error",msg=fill_in))
-    else:                                               # the value column must same with database  
-         mycursor.execute('INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)', (name,username, password,0,now))
+    else:
+         mycursor = mydb.cursor()
+         now = datetime.datetime.now()   #def datetime now()                   
+         mycursor.execute("INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)",(name,username, password,0,now))
+         # the value column must same with database  #insert now time
          mydb.commit()  # push to database 
          return render_template("succeed.html",name=name) # send to succeed page
 
@@ -80,7 +93,6 @@ def member():
         mycursor.execute("SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`")
         dates=mycursor.fetchall()
         for data in dates:
-            print(data)
             return render_template("member.html",sId=sId,dates=dates)
 
 
