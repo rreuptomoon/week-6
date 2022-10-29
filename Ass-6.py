@@ -14,7 +14,7 @@ app.secret_key="test your page!"
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="",
+  password="rex25131215",
   database="website"   # use which database:
 )
 
@@ -35,7 +35,7 @@ def register():
     username=request.form["username"]   # get the form name & password
     password=request.form["password"]
     
-    mycursor = mydb.cursor(dictionary=True,buffered=True) # use the method  - result  dictionary=True
+    mycursor = mydb.cursor(dictionary=True) # use the method  - result  dictionary=True
     mycursor.execute('SELECT * FROM `member` WHERE `username` = %s ',(username,)) #execute the select 
     member=mycursor.fetchone() # fetchone = get member table
     if member: #if the member username exists 
@@ -61,12 +61,13 @@ def signin():
     password=request.form["password"] 
 
     mycursor = mydb.cursor(dictionary=True) 
-    mycursor.execute('SELECT * FROM `member` WHERE `username` = %s AND `password` = %s', (username, password,)) 
+    mycursor.execute('SELECT * FROM `member` WHERE `username` = %s AND `password` = %s AND `id` = id' , (username, password,)) 
 # Fetch one record and return result
     member = mycursor.fetchone()
     if member:  # if  filter the username & password  
         session["username"] = member["username"]
         session["password"] = member["password"]
+        session["id"]=member["id"]
         return redirect(url_for("member"))
     elif username== "" or password == "":          
         #name or password empty
@@ -79,16 +80,16 @@ def signin():
 
 @app.route("/member")
 def member():
-    sId=session.get("username",None) # use session 
+    s_name=session.get("username",None) # use session s_name
      #get method judge have session id or not 
-    if not sId:
+    if not s_name:
             return redirect(url_for("home"))
     else:
         mycursor = mydb.cursor()
         mycursor.execute("SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`")
         dates=mycursor.fetchall()
         for data in dates:
-            return render_template("member.html",sId=sId,dates=dates)
+            return render_template("member.html",s_name=s_name,dates=dates)
 
 
 @app.route("/logout")    # set the logout to home.page
@@ -102,8 +103,25 @@ def error():
     msgs=request.args.get("msg")
     return render_template("error.html",msgs=msgs)
 
-# @app.route("/message",methods=["POST"])
-# def message():
+
+@app.route("/message",methods=["POST"])#msg blog
+def message():
+    msg_content=request.form ["message"]
+    s_Id=session.get("id",None)
+    s_name=session.get("username",None)
+
+    mycursor=mydb.cursor()
+    sql="INSERT INTO `message` (`member_id`,`content`) VALUE (%s,%s)"
+    val=(s_Id,msg_content)
+    mycursor.execute(sql,val)
+    mydb.commit()
+
+    mycursor.execute("SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`")
+    dates=mycursor.fetchall()
+    
+    for data in dates:
+        return render_template("member.html",s_name=s_name,dates=dates)
+    
 
 
 app.run(port=3000)

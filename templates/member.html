@@ -74,6 +74,11 @@
       }
       .msgbox ul {
         list-style: none;
+        overflow-y: auto;
+        height: 360px;
+      }
+      ::-webkit-scrollbar {
+        height: 100px;
       }
       .msgbox li {
         text-align: start;
@@ -86,11 +91,11 @@
     <div class="mainBox box1">
       <form action="/member">
         <div class="boxTop">
-          <h1>Hello {{sId}}</h1>
+          <h1>Hello {{s_name}}</h1>
           <h3>This is your member page !</h3>
         </div>
         <div class="boxDown">
-          <h3>Congratulation, {{sId}} succeed login !!</h3>
+          <h3>Congratulation, {{s_name}} succeed login !!</h3>
           <a href="/logout">LogOut</a>
         </div>
       </form>
@@ -101,7 +106,7 @@
         <h1>Message blog</h1>
       </div>
       <div class="boxDown">
-        <form action="/member">
+        <form action="/message" method="POST">
           <h3>Leave a message now :</h3>
           <input type="text" name="message" />
           <button type="submit">submit</button>
