@@ -5,9 +5,6 @@ import datetime
 
 
 
-# for insert the datetime
-# now=datetime.datetime.now()
-
 app=Flask(__name__ )
 # Change this to your secret key 
 app.secret_key="test your page!"
@@ -17,16 +14,12 @@ app.secret_key="test your page!"
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="rita541982",
+  password="",
   database="website"   # use which database:
 )
 
 
-
 mycursor = mydb.cursor()
-# mycursor.execute("SELECT CURRENT_TIMESTAMP")
-# current_date = mycursor.fetchone()
-# print(current_date[0])
 
 
 
@@ -53,9 +46,11 @@ def register():
             return redirect(url_for("error",msg=fill_in))
     else:
          mycursor = mydb.cursor()
-         now = datetime.datetime.now()   #def datetime now()                   
-         mycursor.execute("INSERT INTO member VALUES (NULL, %s, %s, %s,%s,%s)",(name,username, password,0,now))
+        #  now = datetime.datetime.now()   #def datetime now()
+         sql="INSERT INTO member(`name`,`username`,`password`)VALUES(%s,%s,%s)"
+         val=(name,username,password)               
          # the value column must same with database  #insert now time
+         mycursor.execute(sql,val)
          mydb.commit()  # push to database 
          return render_template("succeed.html",name=name) # send to succeed page
 
