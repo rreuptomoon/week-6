@@ -14,7 +14,7 @@ app.secret_key="test your page!"
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="rex25131215",
+  password="",
   database="website"   # use which database:
 )
 
