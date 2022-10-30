@@ -118,10 +118,10 @@ def message():
 
     mycursor.execute("SELECT `username`, `content` FROM `member` INNER JOIN `message` ON `member`.id = `message`.`member_id`")
     dates=mycursor.fetchall()
-    
+        
     for data in dates:
         return render_template("member.html",s_name=s_name,dates=dates)
-    
+        
 
 
 app.run(port=3000)
